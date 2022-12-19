@@ -1,8 +1,19 @@
+using Domain.Entities;
 using Infrastructure.Persistance.Context;
+using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddCors(x =>
+{
+    x.AddPolicy("Policy", policy =>
+    {
+        policy.AllowAnyHeader();
+        policy.AllowAnyOrigin();
+        policy.AllowAnyMethod();
+    });
+});
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -10,7 +21,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddDbContext<SchoolContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ClassroomConnectionString")));
+//builder.Services.AddDbContext<SchoolContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("ClassroomConnectionString")));
+
 
 var app = builder.Build();
 
@@ -22,7 +34,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors("Policy");
 app.UseAuthorization();
 
 app.MapControllers();

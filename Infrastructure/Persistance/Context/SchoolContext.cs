@@ -12,8 +12,13 @@ namespace Infrastructure.Persistance.Context
 {
     public class SchoolContext : DbContext
     {
+        public SchoolContext()
+        {
+        }
+
         public SchoolContext(DbContextOptions options) : base(options)
-        { 
+        {
+
         }
 
         public DbSet<Aluno> Alunos { get; set; }
@@ -21,6 +26,16 @@ namespace Infrastructure.Persistance.Context
         public DbSet<Sala> Salas { get; set; }
         public DbSet<SalaAula> SalaAula { get; set; }
         public DbSet<SalaAulaAluno> SalaAulaAluno { get; set; }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+        {
+            // In order to be able to create migrations and update database:
+            if (!options.IsConfigured)
+            {
+                options.UseSqlServer("server=(localdb)\\Local;database=ClassroomDB;Trusted_Connection=true");
+            }
+            base.OnConfiguring(options);
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
